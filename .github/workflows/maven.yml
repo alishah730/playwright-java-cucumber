@@ -1,0 +1,28 @@
+name: Playwright-Java-Cucumber
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+    - name: Execute Tests
+      run: mvn clean test
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: Cucumber Reports
+        path: target

@@ -33,7 +33,7 @@ public abstract class BasePage {
 		if (browserType == null) {
 			throw new IllegalArgumentException("Could not launch a browser for type " + browserTypeAsString);
 		}
-		browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
+		browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(true));
 		page = browser.newPage();
 		return page;
 

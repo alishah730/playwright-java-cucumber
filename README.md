@@ -30,8 +30,8 @@ A modern, production-ready test automation framework combining **Microsoft Playw
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/Playwright-Java-Cucumber.git
-cd Playwright-Java-Cucumber
+git clone https://github.com/alishah730/playwright-java-cucumber.git
+cd playwright-java-cucumber
 ```
 
 ### 2. Install Dependencies
@@ -59,7 +59,6 @@ mvn clean test -Dgroups="End2End"
 
 ## 📁 Project Structure
 
-```
 ```text
 src/
 ├── test/
@@ -382,7 +381,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check existing [GitHub Issues](https://github.com/your-username/Playwright-Java-Cucumber/issues)
+1. Check existing [GitHub Issues](https://github.com/alishah730/playwright-java-cucumber/issues)
 2. Create a new issue with detailed description
 3. Join the discussions in [Playwright Community](https://github.com/microsoft/playwright/discussions)
 

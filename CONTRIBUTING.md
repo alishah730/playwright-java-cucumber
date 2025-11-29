@@ -6,8 +6,8 @@ Thank you for your interest in contributing to this project! This document provi
 
 ### 1. Fork the Repository
 - Fork the repository on GitHub
-- Clone your fork locally: `git clone https://github.com/your-username/Playwright-Java-Cucumber.git`
-- Add the original repository as upstream: `git remote add upstream https://github.com/original-owner/Playwright-Java-Cucumber.git`
+- Clone your fork locally: `git clone https://github.com/your-username/playwright-java-cucumber.git`
+- Add the original repository as upstream: `git remote add upstream https://github.com/alishah730/playwright-java-cucumber.git`
 
 ### 2. Set Up Your Development Environment
 - Ensure you have Java 17+ installed

@@ -1,7 +1,6 @@
 package pages;
 
-//import org.junit.Assert;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import com.microsoft.playwright.Page;
 
 public class ItemsPage extends BasePage {
@@ -15,11 +14,15 @@ public class ItemsPage extends BasePage {
 	public void orderProduct(String ProductName) {
 		page.click("//div[text()='" + ProductName + "']/following::button[1]");
 		page.click("#shopping_cart_container > a");
-		//Assert.assertTrue(page.isVisible("text="+ProductName));
+		assertThat(page.isVisible("text=" + ProductName))
+			.as("Product '" + ProductName + "' should be visible in cart")
+			.isTrue();
 		page.click("[data-test=\"checkout\"]");
 	}
 
 	public void loginSuccessful() {
-		//Assert.assertTrue(page.isVisible("text=Products"));
+		assertThat(page.isVisible("text=Products"))
+			.as("Products page should be visible after successful login")
+			.isTrue();
 	}
 }

@@ -11,6 +11,11 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import pages.*;
 
 public class steps extends BasePage{
@@ -74,11 +79,44 @@ public class steps extends BasePage{
 	
 	@After
 	public void tearDown(Scenario scenario) {
-		if (browser != null) {
-			browser.close();
-		}
-		if (page != null) {
-			page.close();
+		try {
+			// Take screenshot if scenario failed
+			if (scenario.isFailed() && page != null) {
+				// Generate timestamp for unique screenshot name
+				String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+				String scenarioName = scenario.getName().replaceAll("[^a-zA-Z0-9]", "_");
+				String screenshotName = "failed_" + scenarioName + "_" + timestamp + ".png";
+				
+				// Create screenshots directory if it doesn't exist
+				java.nio.file.Path screenshotDir = Paths.get("target/screenshots");
+				if (!java.nio.file.Files.exists(screenshotDir)) {
+					java.nio.file.Files.createDirectories(screenshotDir);
+				}
+				
+				// Take screenshot and save to file
+				java.nio.file.Path screenshotPath = screenshotDir.resolve(screenshotName);
+				page.screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
+				
+				// Attach screenshot to Cucumber report
+				byte[] screenshot = page.screenshot();
+				scenario.attach(screenshot, "image/png", "Screenshot of failed step");
+				
+				System.out.println("Screenshot saved: " + screenshotPath.toString());
+			}
+		} catch (Exception e) {
+			System.err.println("Failed to capture screenshot: " + e.getMessage());
+		} finally {
+			// Clean up browser and page resources
+			try {
+				if (page != null) {
+					page.close();
+				}
+				if (browser != null) {
+					browser.close();
+				}
+			} catch (Exception e) {
+				System.err.println("Error closing browser resources: " + e.getMessage());
+			}
 		}
 	}
 }

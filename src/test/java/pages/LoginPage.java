@@ -1,7 +1,6 @@
 package pages;
 
-//import org.junit.Assert;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import com.microsoft.playwright.Page;
 
 public class LoginPage {
@@ -21,7 +20,9 @@ public class LoginPage {
 	
 	public void loginFailed() {
 		boolean visible = page.isVisible("//h3[text()='Epic sadface: Sorry, this user has been locked out.']");
-		//Assert.assertTrue(visible);
+		assertThat(visible)
+			.as("Login should fail with locked out message")
+			.isTrue();
 	}
 	
 }

@@ -1,7 +1,6 @@
 package pages;
 
-//import org.junit.Assert;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import com.microsoft.playwright.Page;
 
 public class CheckoutPage extends BasePage{
@@ -23,6 +22,8 @@ public class CheckoutPage extends BasePage{
 	    }
 	 
 	 public void checkoutSuccessful() {
-	      //Assert.assertTrue(page.isVisible("text=THANK YOU FOR YOUR ORDER"));
+	      assertThat(page.isVisible("text=THANK YOU FOR YOUR ORDER"))
+	      	.as("Order confirmation should be visible after successful checkout")
+	      	.isTrue();
 	}
 }

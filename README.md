@@ -159,9 +159,9 @@ For CI/CD environments, tests run in headless mode by default. To run with visib
 browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
 ```
 
-## 📊 Test Reports
+## 📊 Test Reports & Screenshots
 
-After test execution, reports are generated in multiple formats:
+After test execution, reports are generated in multiple formats, with automatic screenshot capture for failed scenarios:
 
 ### 📈 HTML Reports
 
@@ -180,6 +180,13 @@ After test execution, reports are generated in multiple formats:
 - **Location**: `target/cucumber-junit-reports/cucumber.xml`
 - **Features**: Standard JUnit format
 - **Best for**: CI/CD systems (Jenkins, GitHub Actions, etc.)
+
+### 📸 Screenshot Capture
+
+- **Location**: `target/screenshots/`
+- **Features**: Automatic screenshot capture on test failure with timestamp
+- **Integration**: Screenshots are automatically attached to HTML and JSON reports
+- **Naming**: `failed_<ScenarioName>_<Timestamp>.png`
 
 ## 🏷️ Test Tags & Organization
 

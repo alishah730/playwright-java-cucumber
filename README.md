@@ -11,13 +11,16 @@ A modern, production-ready test automation framework combining **Microsoft Playw
 ## 🚀 Features
 
 - ⚡ **Fast & Reliable**: Playwright's auto-wait and resilient selectors
-- 📝 **BDD Approach**: Cucumber for business-readable test scenarios
+- 📝 **BDD Approach**: Cucumber for business-readable test scenarios  
 - 🎯 **Cross-Browser**: Support for Chromium, Firefox, and WebKit
-- 📊 **Rich Reporting**: HTML, JSON, and XML test reports
+- 🚀 **Parallel Execution**: Advanced configurable parallel test execution with isolated browser contexts
+- 📊 **Rich Reporting**: HTML, JSON, and XML test reports with automatic screenshots
 - 🏗️ **Page Object Model**: Maintainable test architecture
 - 🔧 **Modern Stack**: Java 17, JUnit 5 Platform Suite, Maven 3.9+
 - 🏷️ **Test Tagging**: Run specific test suites with Cucumber tags
 - 🐳 **CI/CD Ready**: Headless execution for continuous integration
+- 📸 **Auto Screenshots**: Automatic screenshot capture on test failures
+- 🔄 **Thread Safety**: Complete isolation between parallel tests (no shared state, cookies, or cache)
 
 ## 📋 Prerequisites
 
@@ -55,6 +58,66 @@ mvn clean test
 # Run specific tagged tests
 mvn clean test -Dgroups="SmokeTest"
 mvn clean test -Dgroups="End2End"
+```
+
+## ⚡ Parallel Execution
+
+This framework supports **advanced parallel execution** with **isolated browser contexts** for faster test execution without interference.
+
+### 🔧 Configuration Options
+
+```bash
+# Run tests with custom parallel thread count (default: 5)
+mvn test -Dparallel.thread.count=3
+mvn test -Dparallel.thread.count=10
+
+# Each thread gets its own isolated browser context
+# No shared cookies, cache, or session data between tests
+```
+
+### 🛡️ Isolation Features
+
+- **Thread-Safe Browser Contexts**: Each test thread gets its own isolated Playwright browser context
+- **No State Interference**: Tests run completely independently with no shared data
+- **Thread-Safe Screenshots**: Automatic screenshot capture with thread-specific naming
+- **Resource Management**: Proper cleanup of browser resources after parallel execution
+- **Configurable Parallelism**: Easily adjust thread count based on your system capabilities
+
+### 📊 Parallel Execution Benefits
+
+- **Faster Test Execution**: Run multiple tests simultaneously
+- **Better Resource Utilization**: Leverage multi-core systems effectively
+- **Scalable**: Configure thread count based on your CI/CD environment
+- **Reliable**: Complete isolation prevents test interdependencies and flaky tests
+
+### 🏗️ Technical Architecture
+
+**BrowserContextManager.java**
+- Thread-safe browser context management using `ThreadLocal<BrowserContext>`
+- Isolated browser instances per thread with `ConcurrentHashMap` for tracking
+- Automatic resource cleanup and context disposal
+- Thread-specific screenshot capture with unique naming
+
+**Maven Configuration**
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+        <parallel>all</parallel>
+        <threadCount>${parallel.thread.count}</threadCount>
+        <useUnlimitedThreads>false</useUnlimitedThreads>
+        <forkCount>1</forkCount>
+        <reuseForks>true</reuseForks>
+    </configuration>
+</plugin>
+```
+
+**Cucumber Configuration**
+```properties
+cucumber.execution.parallel.enabled=true
+cucumber.execution.parallel.mode.default=concurrent
+cucumber.execution.parallel.config.strategy=dynamic
 ```
 
 ## 📁 Project Structure

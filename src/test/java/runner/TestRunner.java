@@ -12,7 +12,7 @@ import static io.cucumber.junit.platform.engine.Constants.FEATURES_PROPERTY_NAME
 @IncludeEngines("cucumber")
 @ConfigurationParameter(key = FEATURES_PROPERTY_NAME, value = "classpath:features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "stepdefinitions")
-@ConfigurationParameter(key = "cucumber.plugin", value = "html:target/cucumber-html-reports/index.html,json:target/cucumber-json-reports/cucumber.json,junit:target/cucumber-junit-reports/cucumber.xml")
+@ConfigurationParameter(key = "cucumber.plugin", value = "html:target/cucumber-html-reports/index.html,json:target/cucumber-json-reports/cucumber.json,junit:target/cucumber-junit-reports/cucumber.xml,timeline:target/cucumber-timeline-reports/timeline.html")
 @ConfigurationParameter(key = "cucumber.publish.quiet", value = "true")
 @IncludeTags("test")
 public class TestRunner {

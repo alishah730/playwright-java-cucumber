@@ -30,14 +30,22 @@ public class steps extends BasePage{
 	@Given("^User launched SwagLabs application$")
 	public void user_launched_swaglabs_application() {
 		try {
+			// Create new isolated browser context for this thread/scenario
 			page = createPlaywrightPageInstance(System.getProperty("browser"));
 			page.navigate(System.getProperty("applicationUrl"));
+			
+			// Initialize page objects with the thread-safe page instance
 			loginPage = new LoginPage(page);
 			itemsPage = new ItemsPage(page);
 			checkoutPage = new CheckoutPage(page);
+			
+			System.out.println("Thread: " + Thread.currentThread().getName() + 
+							 " - Launched application: " + System.getProperty("applicationUrl"));
 		    
 		}
 		catch (Exception e) {
+			System.err.println("Failed to launch application in thread: " + 
+							 Thread.currentThread().getName() + " - " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -77,15 +85,19 @@ public class steps extends BasePage{
          checkoutPage.checkoutSuccessful();
 	}
 	
+
+	
 	@After
 	public void tearDown(Scenario scenario) {
+		String threadName = Thread.currentThread().getName();
+		
 		try {
-			// Take screenshot if scenario failed
-			if (scenario.isFailed() && page != null) {
+			// Take screenshot if scenario failed using thread-safe method
+			if (scenario.isFailed()) {
 				// Generate timestamp for unique screenshot name
 				String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 				String scenarioName = scenario.getName().replaceAll("[^a-zA-Z0-9]", "_");
-				String screenshotName = "failed_" + scenarioName + "_" + timestamp + ".png";
+				String screenshotName = "failed_" + scenarioName + "_" + threadName + "_" + timestamp + ".png";
 				
 				// Create screenshots directory if it doesn't exist
 				java.nio.file.Path screenshotDir = Paths.get("target/screenshots");
@@ -93,29 +105,28 @@ public class steps extends BasePage{
 					java.nio.file.Files.createDirectories(screenshotDir);
 				}
 				
-				// Take screenshot and save to file
-				java.nio.file.Path screenshotPath = screenshotDir.resolve(screenshotName);
-				page.screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
-				
-				// Attach screenshot to Cucumber report
-				byte[] screenshot = page.screenshot();
-				scenario.attach(screenshot, "image/png", "Screenshot of failed step");
-				
-				System.out.println("Screenshot saved: " + screenshotPath.toString());
+				// Take thread-safe screenshot
+				byte[] screenshot = BrowserContextManager.takeScreenshot();
+				if (screenshot != null) {
+					// Save screenshot to file
+					java.nio.file.Path screenshotPath = screenshotDir.resolve(screenshotName);
+					java.nio.file.Files.write(screenshotPath, screenshot);
+					
+					// Attach screenshot to Cucumber report
+					scenario.attach(screenshot, "image/png", "Screenshot of failed step - Thread: " + threadName);
+					
+					System.out.println("Thread: " + threadName + " - Screenshot saved: " + screenshotPath.toString());
+				}
 			}
 		} catch (Exception e) {
-			System.err.println("Failed to capture screenshot: " + e.getMessage());
+			System.err.println("Thread: " + threadName + " - Failed to capture screenshot: " + e.getMessage());
 		} finally {
-			// Clean up browser and page resources
+			// Clean up thread-specific browser context
 			try {
-				if (page != null) {
-					page.close();
-				}
-				if (browser != null) {
-					browser.close();
-				}
+				BrowserContextManager.closeContext();
+				System.out.println("Thread: " + threadName + " - Browser context closed");
 			} catch (Exception e) {
-				System.err.println("Error closing browser resources: " + e.getMessage());
+				System.err.println("Thread: " + threadName + " - Error closing browser context: " + e.getMessage());
 			}
 		}
 	}

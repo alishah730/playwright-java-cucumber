@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6 Apps Gantt – 40h Week</title>
+  <script src="https://code.highcharts.com/gantt/highcharts-gantt.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #container { min-width: 800px; height: 600px; margin: 1em auto; }
+  </style>
+</head>
+<body>
+  <h1>6 Apps – 40 Hour Week Timeline</h1>
+  <div id="container"></div>
+
+  <script>
+    const hour = 3600 * 1000;
+    const base = Date.now();      // Start of the 40h window
+    const week40 = 40 * hour;     // 40 hours
+
+    // Example hours per app (replace with your real values)
+    const apps = [
+      { name: 'App 1', figma: 5, dev: 20, deploy: 3, test: 8 },
+      { name: 'App 2', figma: 2, dev: 10, deploy: 2, test: 5 },
+      { name: 'App 3', figma: 4, dev: 15, deploy: 2, test: 6 },
+      { name: 'App 4', figma: 3, dev: 12, deploy: 1, test: 4 },
+      { name: 'App 5', figma: 6, dev: 25, deploy: 4, test: 10 },
+      { name: 'App 6', figma: 1, dev: 8,  deploy: 1, test: 3 }
+    ];
+
+    const data = [];
+    apps.forEach((app, index) => {
+      let cursor = base;
+
+      function addTask(label, hours, color) {
+        const start = cursor;
+        const end = cursor + hours * hour;
+        cursor = end;
+
+        data.push({
+          name: label,
+          app: app.name,
+          y: index,
+          start,
+          end,
+          color
+        });
+      }
+
+      addTask('Figma',      app.figma,  '#7cb5ec');
+      addTask('Development',app.dev,    '#90ed7d');
+      addTask('Deployment', app.deploy, '#f7a35c');
+      addTask('Testing',    app.test,   '#8085e9');
+    });
+
+    Highcharts.ganttChart('container', {
+      title: {
+        text: '6 Apps – Activities in a 40 Hour Week'
+      },
+      xAxis: {
+        type: 'datetime',
+        min: base,               // start of week window
+        max: base + week40,      // base + 40 hours
+        tickInterval: 4 * hour,  // 4-hour grid; adjust as needed
+        dateTimeLabelFormats: {
+          hour: '%Hh',
+          day: '%e %b'
+        }
+      },
+      yAxis: {
+        type: 'category',
+        categories: apps.map(a => a.name),
+        grid: { enabled: true },
+        labels: { style: { fontWeight: 'bold' } }
+      },
+      series: [{
+        name: 'Activities',
+        data,
+        dataLabels: {
+          enabled: true,
+          format: '{point.name}',
+          style: { fontSize: '12px' }
+        },
+        tooltip: {
+          pointFormat:
+            '<b>{point.app}</b><br/>' +
+            '{point.name}<br/>' +
+            'Start: {point.start:%e %b %H:%M}<br/>' +
+            'End: {point.end:%e %b %H:%M}<br/>' +
+            'Duration: {((point.end - point.start)/' + hour + ').toFixed(1)} h'
+        }
+      }],
+      legend: { enabled: false }
+    });
+  </script>
+</body>
+</html>
